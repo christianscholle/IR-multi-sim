@@ -14,6 +14,7 @@ class Robot(Spawnable):
         observable_joints: List[str]=[],
         control_type: str = None,
         max_velocity: float = None,
+        resting_angles: ndarray = None,
         name: str = None) -> None:
         """
         position: Beginning position of robot.
@@ -31,3 +32,4 @@ class Robot(Spawnable):
         self.observable_joints = observable_joints
         self.control_type = control_type if control_type else "Velocity"
         self.max_velocity = max_velocity
+        self.resting_angles = resting_angles
