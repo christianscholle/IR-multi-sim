@@ -928,7 +928,8 @@ class PybulletEnv(ModularEnv):
         Spawn a robot object into the environment and safe it in a dictionary with its environment id 
         """
         urdf_path = self.asset_path + str(robot.urdf_path)
-        newRobot = PyRobot(urdf_path, robot.control_type, robot.max_velocity, robot.observable_joints, robot.name, self._env_offsets[env_idx], robot.position, 
+        newRobot = PyRobot(urdf_path, robot.control_type, robot.max_velocity, robot.resting_angles,
+                           robot.observable_joints, robot.name, self._env_offsets[env_idx], robot.position, 
                            robot.orientation[::-1], robot.collision, robot.observable)
 
         # track spawned robot

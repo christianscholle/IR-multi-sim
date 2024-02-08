@@ -9,7 +9,7 @@ _spawnedRobots = 0
 class PyRobot(ABC):
     """ A robot specific for the pybullet environment """
     def __init__(self,
-                 urdf_path: str, control_type: str, max_velocity: float,
+                 urdf_path: str, control_type: str, max_velocity: float, resting_angles: ndarray,
                  observableJoints: List[str], 
                  name: str = None, 
                  offset: ndarray = array([0,0,0]), 
@@ -38,8 +38,9 @@ class PyRobot(ABC):
         self._initPos = position
         self._initOri = orientation
 
-        # for random joint configuration
-        self.randomJoints = True
+        # create random joint positions if no resting angles are specified
+        self.resting_angles = resting_angles
+        self.randomJoints = True if not self.resting_angles else False
 
         # if necessary create random position and orientation
         self.position = self._getPosition()
@@ -102,6 +103,12 @@ class PyRobot(ABC):
                 for i, joint in enumerate(self.controllableJoints):
                     pyb.resetJointState(bodyUniqueId=self.id, jointIndex=joint, targetValue=tmpPos[i]) 
                     valid = self._checkValidJointConfig()
+        else:
+            # use specified angles
+            for i, joint in enumerate(self.controllableJoints):
+                pyb.resetJointState(bodyUniqueId=self.id, jointIndex=joint, targetValue=self.resting_angles[i]) 
+                valid = self._checkValidJointConfig()
+
        
     # returns current robot position, orientation and scale
     def getPose(self) -> Tuple[List[float], List[float], float]:
@@ -135,10 +142,6 @@ class PyRobot(ABC):
     
     # deletes and recreates robot with new random config
     def reset(self) -> None:
-        #pyb.removeBody(self.id) 
-        #self.id = pyb.loadURDF(self.urdf_path, basePosition=self._getPosition(), baseOrientation=self._getOrientation(), 
-        #                       useFixedBase=True, globalScaling=self.scale)
-        
         # reset robot
         pyb.resetBasePositionAndOrientation(bodyUniqueId=self.id,
                                             posObj=self._getPosition(),
@@ -152,6 +155,12 @@ class PyRobot(ABC):
                 for i, joint in enumerate(self.controllableJoints):
                     pyb.resetJointState(bodyUniqueId=self.id, jointIndex=joint, targetValue=tmpPos[i]) 
                     valid = self._checkValidJointConfig()     
+        else:
+            # use specified angles
+            for i, joint in enumerate(self.controllableJoints):
+                pyb.resetJointState(bodyUniqueId=self.id, jointIndex=joint, targetValue=self.resting_angles[i]) 
+                valid = self._checkValidJointConfig()
+        
 
     # create random position if there is a range given as argument
     def _getPosition(self) -> List[float]:       
