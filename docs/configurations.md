@@ -61,6 +61,7 @@ To create a robot in an environment, only the urdf path is required. All other p
     observable_joints:    # ["string", ...]: Names of robot joints to be observed.
     control_type:         # str: "Velocity" or "Position" to define the control type.
     max_velocity:         # float: Define the maximum velocity a joint can be moved by.
+    resting_angles:       # [float, ...]: Define default anlges in radians for robot joints
     
   - name:                 # Start a new robot object.
 ```
