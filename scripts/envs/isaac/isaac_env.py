@@ -617,7 +617,6 @@ class IsaacEnv(ModularEnv):
         # step simulation amount of times according to params
         for _ in range(self.step_count):
             self._simulation.update()
-    
 
     def step_wait(self) -> VecEnvStepReturn:  
         self._timesteps += 1                        # increment elapsed timesteps
@@ -746,23 +745,31 @@ class IsaacEnv(ModularEnv):
             # reset all robots to default pose
             for robot in self._get_robots(i):
                 robot[0].post_reset()  # get prim from tuple and apply reset
+               
+                if robot[3]: 
+                    # resting joints configuration specified 
+                    robot[0].set_joint_positions(robot[3])
+                else:
+                    # create random configuration
+                    
+                    # get joint limits
+                    limits = robot[0].get_articulation_controller().get_joint_limits()
+                    joint_count = limits.shape[0]
 
-                # get joint limits
-                limits = robot[0].get_articulation_controller().get_joint_limits()
-                joint_count = limits.shape[0]
+                    random_floats = np.random.random_sample(joint_count)
+                    random_config = np.empty(joint_count)
 
-                random_floats = np.random.random_sample(joint_count)
-                random_config = np.empty(joint_count)
+                    # generate random joint config value for each angle
+                    for i in range(joint_count):
+                        min = limits[i][0]
+                        max = limits[i][1]
 
-                # generate random joint config value for each angle
-                for i in range(joint_count):
-                    min = limits[i][0]
-                    max = limits[i][1]
+                        random_config[i] = min + (max - min) * random_floats[i]
 
-                    random_config[i] = min + (max - min) * random_floats[i]
-
-                # set random beginning position
-                robot[0].set_joint_positions(random_config)
+                    # set random beginning position
+                    robot[0].set_joint_positions(random_config)
+                
+                self._simulation.update()       # update sim with reset configuration
         
         self._timesteps[env_idxs] = 0           # reset timestep tracking        
         self._collisionsCount[env_idxs] = 0     # reset collisions count tracking
@@ -1013,9 +1020,6 @@ class IsaacEnv(ModularEnv):
             if 'CONTACT_FOUND' in contact_type or 'CONTACT_PERSIST' in contact_type:
                 self._collisions.append((actor0, actor1))
 
-        #if(len(self._collisions) > 0):
-        #    print(self._collisions)
-
     def _spawn_urdf(self, urdf: Urdf, env_idx: int)-> str:
         """
         Loads in a URDF file into the world at position and orientation.
@@ -1077,7 +1081,7 @@ class IsaacEnv(ModularEnv):
         self._scene.add(obj)
 
         # track spawned robot
-        self._robots.append((obj, robot.control_type, robot.max_velocity))
+        self._robots.append((obj, robot.control_type, robot.max_velocity, robot.resting_angles))
 
         # add it to list of observable objects, if necessary
         if robot.observable:

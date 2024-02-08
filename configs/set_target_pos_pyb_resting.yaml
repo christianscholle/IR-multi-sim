@@ -18,9 +18,9 @@ evaluation:
   timesteps: 100000 
 
 env:
-  num_envs: 1
+  num_envs: 20
   env_offset: [4, 4]
-  headless: False
+  headless: True
   step_size: 0.04
   step_count: 32
 
@@ -70,6 +70,6 @@ env:
       reward: 15
       type: "DistanceReset" 
           
-    - max: 10
+    - max: 250
       type: "TimestepsReset"
       reward: -1
