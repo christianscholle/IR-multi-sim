@@ -652,8 +652,7 @@ class IsaacEnv(ModularEnv):
                     donesDict[idx][f"{currName}_success"] = currSuccess[idx]
                                       
         # get environemnt idx that need a reset 
-        #self._dones = np.logical_or(resets, successes)
-        self._dones = resets
+        self._dones = np.logical_or(resets, successes)
         reset_idx = np.where(self._dones)[0]
 
         # create csv file with informations about each specific environment each timestep

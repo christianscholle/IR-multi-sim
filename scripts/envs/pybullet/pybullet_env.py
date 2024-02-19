@@ -117,6 +117,9 @@ class PybulletEnv(ModularEnv):
             self.set_attr("avg_steps", 0)
             self.set_attr("avg_coll", 0)
 
+        # disable debug visualitzation
+        pyb.configureDebugVisualizer(pyb.COV_ENABLE_GUI,0)
+
 
     def _setup_simulation(self, headless: bool, step_size: float):
         disp = pyb.DIRECT if headless else pyb.GUI
@@ -611,8 +614,8 @@ class PybulletEnv(ModularEnv):
                     donesDict[idx][f"{currName}_success"] = currSuccess[idx]
                                       
         # get environemnt idx that need a reset 
-        #self._dones = np.logical_or(resets, successes)
-        self._dones = resets
+        self._dones = np.logical_or(resets, successes)
+        #self._dones = resets
         reset_idx = np.where(self._dones)[0]             
 
         # create csv file with informations about each specific environment each timestep
@@ -622,7 +625,7 @@ class PybulletEnv(ModularEnv):
                 positions = []
                 for robot in self._observable_robots[envIdx]:                    
                         jointsPos, _ = robot.getObservableJointsPose() 
-                        positions.append(list(jointsPos))
+                        positions = np.append(positions, list(jointsPos))                   
                 info = {
                     "env_id": envIdx,
                     "timestep": self._timesteps[envIdx], 

@@ -1,28 +1,28 @@
 run:
   load_model: False
-  model_name: "set_target_pos_pyb"
+  model_name: "set_target_pos_pyb_resting"
   checkpoint: ""
   algorithm:
     type: "TD3"
     parameters:
-      learning_rate: 0.0005
+      learning_rate: 0.00025
       batch_size: 2048
       train_freq: 1
 train:
   logging: 3
-  timesteps: 700000
-  save_freq: 100000
+  timesteps: 2000000
+  save_freq: 50000
 
 evaluation:
   logging: 2
   timesteps: 100000 
 
 env:
-  num_envs: 20
+  num_envs: 16
   env_offset: [4, 4]
   headless: True
-  step_size: 0.04
-  step_count: 32
+  step_size: 0.00416666666
+  step_count: 1
 
   robots:
     - name: "R1"
@@ -43,7 +43,7 @@ env:
   
   obstacles:
     - name: "TargetCube"
-      position: [[0.3, -0.3, 0.7],[0.5, 0.3, 1.1]]
+      position: [[0.3, -0.2, 0.8],[0.5, 0.2, 1.1]]
       color: [1, 0, 0]
       collision: False
       observable: True
@@ -66,10 +66,10 @@ env:
 
   resets:  
     - distance: "target"
-      min_distance: 0.01
+      min_distance: 0.1
       reward: 15
       type: "DistanceReset" 
           
-    - max: 250
+    - max: 200
       type: "TimestepsReset"
       reward: -1

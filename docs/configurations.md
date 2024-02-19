@@ -55,7 +55,7 @@ To create a robot in an environment, only the urdf path is required. All other p
   - name:                 # str: Name of the robot.
     urdf_path:            # str: Path to the URDF, usually in the robots folder.
     position:             # [float, float, float]: X, Y, Z base position of the robot.
-    orientation:          # [float, float, float, float]: X, Y, Z, W world space quaternion of the robot.
+    orientation:          # [float, float, float, float]: W, X, Y, Z world space quaternion of the robot.
     collision:            # bool: True if the robot is supposed to collide with surroundings.
     observable:           # bool: True if position and orientation are included in observations for training.
     observable_joints:    # ["string", ...]: Names of robot joints to be observed.
@@ -74,7 +74,7 @@ To define a general URDF object, you must provide a path to a URDF file. The oth
     urdf_path:    # str: Path of the URDF.
     scale:        # [float, float, float]: Scaling along the x, y, z axes.
     position:     # [float, float, float]: X, Y, Z position.
-    orientation:  # [float, float, float, float]: X, Y, Z, W world space quaternion.
+    orientation:  # [float, float, float, float]: W, X, Y, Z world space quaternion.
     collision:    # bool: True if it is supposed to collide with robots.
     observable:   # bool: True if position and orientation are included in observations for training.
 ```  
@@ -86,7 +86,7 @@ To define objects that can be spawned, you must provide the object type. The oth
   - type:         # str: Type of the obstacle, choose from "Cube," "Sphere," or "Cylinder".
     name:         # str: Name of the object.
     position:     # [float, float, float]: X, Y, Z position.
-    orientation:  # [float, float, float, float]: X, Y, Z, W world space quaternion.
+    orientation:  # [float, float, float, float]: W, X, Y, Z world space quaternion.
     scale:        # [float, float, float]: Scaling along the x, y, z axes.
     color:        # [R, G, B]: Color of the object, range: [0, 1].
     collision:    # bool: True if it is supposed to collide with robots.
