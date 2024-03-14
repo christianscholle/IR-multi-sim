@@ -645,8 +645,6 @@ class PybulletEnv(ModularEnv):
                 self.log_dict = pd.concat([self.log_dict, pd.DataFrame([info])], ignore_index=True)
 
         if self.verbose > 1:
-            print("cpu", self._get_cpu_usage())
-            print("gpu", self._get_gpu_usage())
             self.set_attr("cpu_usage", self._get_cpu_usage())    
             self.set_attr("gpu_usage", self._get_gpu_usage())    
         
