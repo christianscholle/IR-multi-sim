@@ -9,3 +9,5 @@ pybullet
 PyYAML
 tensorflow==2.10
 tensorboard
+psutil 
+gputil

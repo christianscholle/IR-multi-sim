@@ -28,6 +28,8 @@ import numpy as np
 import math
 import pybullet as pyb
 
+import psutil
+import GPUtil
 import pandas as pd
 import timeit
 
@@ -109,6 +111,8 @@ class PybulletEnv(ModularEnv):
             self.set_attr("avg_setupTime", 0)
             self.set_attr("avg_actionTime", 0)    
             self.set_attr("avg_obsTime", 0) 
+            self.set_attr("cpu_usage", 0)    
+            self.set_attr("gpu_usage", 0)    
 
         if self.verbose > 2:
             for name, _ in self._distances_after_reset.items():
@@ -640,6 +644,12 @@ class PybulletEnv(ModularEnv):
                 }
                 self.log_dict = pd.concat([self.log_dict, pd.DataFrame([info])], ignore_index=True)
 
+        if self.verbose > 1:
+            print("cpu", self._get_cpu_usage())
+            print("gpu", self._get_gpu_usage())
+            self.set_attr("cpu_usage", self._get_cpu_usage())    
+            self.set_attr("gpu_usage", self._get_gpu_usage())    
+        
         # apply resets
         if reset_idx.size > 0: 
             # Log only general information averaged over all environments
@@ -655,7 +665,7 @@ class PybulletEnv(ModularEnv):
             if self.verbose > 1:
                 self.set_attr("avg_setupTime", self.setupTime)
                 self.set_attr("avg_actionTime", self.actionTime)    
-                self.set_attr("avg_obsTime", self.obsTime)         
+                self.set_attr("avg_obsTime", self.obsTime)      
 
             # Add information about rewards and resets averaged over all environments
             if self.verbose > 2:
@@ -999,3 +1009,13 @@ class PybulletEnv(ModularEnv):
             self._collidable.append(newObject.id)
 
         return newObject.name
+    
+    def _get_cpu_usage(self):
+        return psutil.cpu_percent()
+        
+    def _get_gpu_usage(self):
+        gpus = GPUtil.getGPUs()
+        if gpus:
+            return gpus[0].load * 100
+        else:
+            return 0

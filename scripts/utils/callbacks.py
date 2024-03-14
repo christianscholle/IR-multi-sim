@@ -20,6 +20,9 @@ class PerformanceCallback(GeneralCallback):
         self.logger.record('performance/avg_setupTime', self.training_env.get_attr('avg_setupTime')[0])
         self.logger.record('performance/avg_actionTime', self.training_env.get_attr('avg_actionTime')[0])
         self.logger.record('performance/avg_obsTime', self.training_env.get_attr('avg_obsTime')[0])
+        
+        self.logger.record('performance/cpu_usage', self.training_env.get_attr('cpu_usage')[0])
+        self.logger.record('performance/gpu_usage', self.training_env.get_attr('gpu_usage')[0])
         return super()._on_step()
 
 class AdvancedCallback(PerformanceCallback):
