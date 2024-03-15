@@ -32,7 +32,7 @@ def setup_model(config: dict, env: ModularEnv) -> (BaseAlgorithm, str):
 
     # create new model if necessary
     else:
-        # os.environ["CUDA_VISIBLE_DEVICES"] = "" 
+        #os.environ["CUDA_VISIBLE_DEVICES"] = "" 
         # parse model path for windows(\) and linux(/)
         pattern = r'[\\/]([^\\/]+)\.yaml$'
         match = re.search(pattern, config["path"])

@@ -141,6 +141,6 @@ if __name__ == '__main__':
 
         # save final model and clean up environment
         model.save(model_path + "/" + f"checkpoint_{model.num_timesteps}.zip")
-        env.close(csv_path + f"timestep_{model.num_timesteps}")
+        env.close(csv_path + f"_step_{model.num_timesteps}")
         print("Finished training!")
         exit(0)

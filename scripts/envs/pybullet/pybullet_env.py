@@ -124,6 +124,10 @@ class PybulletEnv(ModularEnv):
         # disable debug visualitzation
         pyb.configureDebugVisualizer(pyb.COV_ENABLE_GUI,0)
 
+        # for gpu/cpu tracking
+        self.gpu_usage: List = []
+        self.cpu_usage: List = []
+
 
     def _setup_simulation(self, headless: bool, step_size: float):
         disp = pyb.DIRECT if headless else pyb.GUI
@@ -648,6 +652,9 @@ class PybulletEnv(ModularEnv):
             self.set_attr("cpu_usage", self._get_cpu_usage())    
             self.set_attr("gpu_usage", self._get_gpu_usage())    
         
+        self.gpu_usage.append(self._get_gpu_usage())
+        self.cpu_usage.append(self._get_cpu_usage())
+        
         # apply resets
         if reset_idx.size > 0: 
             # Log only general information averaged over all environments
@@ -932,6 +939,14 @@ class PybulletEnv(ModularEnv):
             
             df = pd.DataFrame(self.log_dict)        # transform logs to a df       
             df.to_csv(path +".csv", index=False)    # save df to a csv file
+
+        if self.gpu_usage:  
+            self.gpu_usage = pd.DataFrame(self.gpu_usage)                 # transform logs to a df 
+            self.gpu_usage.to_csv(path +"_gpu_usage.csv", index=False)    # save df to a csv file
+
+        if self.cpu_usage:
+            self.cpu_usage = pd.DataFrame(self.cpu_usage)                 # transform logs to a df 
+            self.cpu_usage.to_csv(path +"_cpu_usage.csv", index=False)    # save df to a csv file
                 
 
     def _spawn_robot(self, robot: Robot, env_idx: int) -> str:
