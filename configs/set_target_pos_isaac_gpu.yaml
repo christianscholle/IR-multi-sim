@@ -1,6 +1,6 @@
 run:
   load_model: False
-  model_name: "set_target_pos_pyb_resting_cpu_gpu"
+  model_name: "set_target_pos_isaac_gpu"
   checkpoint: ""
   algorithm:
     type: "TD3"
@@ -9,16 +9,16 @@ run:
       batch_size: 2048
       train_freq: 1
 train:
-  logging: 2
-  timesteps: 10000
-  save_freq: 10000
+  logging: 1
+  timesteps: 100000
+  save_freq: 100000
 
 evaluation:
   logging: 2
   timesteps: 100000 
 
 env:
-  num_envs: 16
+  num_envs: 4
   env_offset: [4, 4]
   headless: True
   step_size: 0.00416666666
