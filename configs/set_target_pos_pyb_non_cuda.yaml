@@ -10,8 +10,8 @@ run:
       train_freq: 1
 train:
   logging: 0
-  timesteps: 1000
-  save_freq: 1000
+  timesteps: 100000
+  save_freq: 100000
 
 evaluation:
   logging: 2

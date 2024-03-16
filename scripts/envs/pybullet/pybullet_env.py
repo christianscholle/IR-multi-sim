@@ -124,8 +124,6 @@ class PybulletEnv(ModularEnv):
         # disable debug visualitzation
         pyb.configureDebugVisualizer(pyb.COV_ENABLE_GUI,0)
 
-        self.cpu_use = []
-
 
     def _setup_simulation(self, headless: bool, step_size: float):
         disp = pyb.DIRECT if headless else pyb.GUI
@@ -650,7 +648,6 @@ class PybulletEnv(ModularEnv):
             self.set_attr("cpu_usage", self._get_cpu_usage())    
             self.set_attr("gpu_usage", self._get_gpu_usage())   
 
-        self.cpu_use.append(self._get_cpu_usage()) 
         
         # apply resets
         if reset_idx.size > 0: 
@@ -936,10 +933,6 @@ class PybulletEnv(ModularEnv):
             
             df = pd.DataFrame(self.log_dict)        # transform logs to a df       
             df.to_csv(path +".csv", index=False)    # save df to a csv file
-        
-        df = pd.DataFrame(self.cpu_use)             # transform logs to a df       
-        df.to_csv(path +"_cpu.csv", index=False)    # save df to a csv file
-
                 
 
     def _spawn_robot(self, robot: Robot, env_idx: int) -> str:
@@ -1017,7 +1010,7 @@ class PybulletEnv(ModularEnv):
         return newObject.name
     
     def _get_cpu_usage(self):
-        return psutil.cpu_percent()
+        return psutil.cpu_percent(interval=None)
         
     def _get_gpu_usage(self):
         gpus = GPUtil.getGPUs()
