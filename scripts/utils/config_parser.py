@@ -38,7 +38,7 @@ def parse_config(path: str, engine:str, isEval:bool):
         # Extract environment parameters
         env = {}
         params = config.get('env', {})
-        env["engine"] = "PyBullet"  if engine == "pybullet" else "Isaac"
+        env["engine"] = "PyBullet" if engine == "pybullet" else "Isaac"
         env["robots"] = [] if "robots" not in params else [_parse_robot(obj) for obj in params["robots"]]
         env["obstacles"] = [] if "obstacles" not in params else [_parse_obstacle(obj) for obj in params["obstacles"]]
         env["urdfs"] = [] if "urdfs" not in params else [_parse_urdf(obj) for obj in params['urdfs']]

@@ -30,6 +30,10 @@ if "%1" equ "pybullet" (
         echo Error: Invalid Python path: %PYTHON_PATH%
         exit /b 1
     )
+    
+    REM Install needed packag
+    %PYTHON_PATH% -m pip install psutil
+    %PYTHON_PATH% -m pip install GPUtil
 
     REM Run python code with the chosen interpreter and all arguments except the first one
     %PYTHON_PATH% main.py %1 %2 %3

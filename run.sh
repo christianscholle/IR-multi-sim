@@ -31,7 +31,11 @@ elif [ "$1" == "isaac" ]; then
         echo "Error: Invalid Python path: $PYTHON_PATH"
         exit 1
     fi
-
+    
+    # Install needed packag
+    "$PYTHON_PATH" -m pip install psutil
+    "$PYTHON_PATH" -m pip install GPUtil
+    
     # Run Python code with the chosen interpreter and all arguments except the first one
     "$PYTHON_PATH" main.py $1 $2 $3
 

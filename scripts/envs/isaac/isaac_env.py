@@ -24,6 +24,8 @@ import numpy as np
 import math
 import pandas as pd
 import timeit
+import psutil
+import GPUtil
 
 def _add_position_offset(pos: Union[np.ndarray, Tuple[np.ndarray, np.ndarray]], offset: np.ndarray):
     if isinstance(pos, Tuple):
@@ -128,6 +130,8 @@ class IsaacEnv(ModularEnv):
             self.set_attr("avg_setupTime", 0)
             self.set_attr("avg_actionTime", 0)    
             self.set_attr("avg_obsTime", 0) 
+            self.set_attr("cpu_usage", 0)    
+            self.set_attr("gpu_usage", 0)    
 
         if self.verbose > 2:
             for name, _ in self._distances_after_reset.items():
@@ -135,6 +139,10 @@ class IsaacEnv(ModularEnv):
                 self.set_attr("avg_" + name + "_anglular_dist" , 0)   
             self.set_attr("avg_steps", 0)
             self.set_attr("avg_coll", 0)
+        
+        # for gpu/cpu tracking
+        self.gpu_usage: List = []
+        self.cpu_usage: List = []
 
     
     def _setup_simulation(self, headless: bool, step_size: float):
@@ -685,6 +693,10 @@ class IsaacEnv(ModularEnv):
                 }
 
                 self.log_dict = pd.concat([self.log_dict, pd.DataFrame([info])], ignore_index=True)
+        
+        if self.verbose > 4:
+            self.set_attr("cpu_usage", self._get_cpu_usage())    
+            self.set_attr("gpu_usage", self._get_gpu_usage())  
 
         # apply resets
         if reset_idx.size > 0:      
@@ -832,6 +844,7 @@ class IsaacEnv(ModularEnv):
             
             df = pd.DataFrame(self.log_dict)        # transform logs to a df       
             df.to_csv(path +".csv", index=False)    # save df to a csv file
+ 
         self._simulation.close()
 
 
@@ -1179,3 +1192,14 @@ class IsaacEnv(ModularEnv):
 
     def _get_robot_joint_names(self, robot_articulation) -> List[str]:
         return [child.GetName() for child in robot_articulation.prim.GetAllChildren()]
+    
+    def _get_cpu_usage(self):
+        return psutil.cpu_percent(interval=None)
+        
+
+    def _get_gpu_usage(self):
+        gpus = GPUtil.getGPUs()
+        if gpus:
+            return gpus[0].load * 100
+        else:
+            return 0
